@@ -1,9 +1,3 @@
-
-# URL_Shortener
-
-Implementation of final project for the course Cloud Computing (UE22CS351A)
-
-=======
 # Load-Balanced URL Shortener
 
 A containerized URL shortener service built with Python, Flask and Docker that allows users to submit long URLs and get shortened versions. URL mappings are stored in Redis.
