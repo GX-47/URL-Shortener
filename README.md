@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # URL_Shortener
 Implementation of final project for the course Cloud Computing (UE22CS351A)
 =======
@@ -75,4 +75,4 @@ If using docker:
 - Redis - Key-value store
 - Docker - Containerization
 - Gunicorn - WSGI HTTP Server
->>>>>>> 4c73cac (WEEK 1 FILES UPLOADED)
+
