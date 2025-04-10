@@ -1,13 +1,16 @@
 # Load-Balanced URL Shortener
 
-A containerized URL shortener service built with Python, Flask, Docker, and Kubernetes that allows users to submit long URLs and get shortened versions. The system is deployable on Kubernetes with a load balancer distributing requests across multiple instances. URL mappings are stored in Redis, a key-value store running in a separate container.
+A containerized URL shortener service built with Python, Flask, Docker, and Kubernetes that allows users to submit long URLs and get shortened versions. The system is scalable, with a load balancer distributing requests across multiple instances. URL mappings are stored in Redis, a key-value store running in a separate container.
 
 ## Features
 
 - Shorten long URLs to easily shareable short URLs
 - Containerized application using Docker
 - Redis for URL storage
-- Kubernetes deployment with multiple replicas
+- Horizontally scalable with Kubernetes
+- Auto-scaling based on CPU usage
+- Load balancing across multiple instances
+- Stress testing tools included
 
 ## Project Structure
 
@@ -19,7 +22,11 @@ A containerized URL shortener service built with Python, Flask, Docker, and Kube
 ├── requirements.txt              # Python dependencies
 ├── redis-deployment.yaml         # Redis Kubernetes deployment
 ├── url-shortener-config.yaml     # ConfigMap and Secret
-└── url-shortener-deployment.yaml # URL shortener deployment
+├── url-shortener-deployment.yaml # URL shortener deployment
+├── url-shortener-hpa.yaml        # Horizontal Pod Autoscaler
+├── url-shortener-ingress.yaml    # Ingress configuration
+└── stress-test.ps1               # PowerShell stress testing script
+├── stress-test.sh                # Bash stress testing script
 ```
 
 ## Setup and Installation
@@ -73,16 +80,27 @@ A containerized URL shortener service built with Python, Flask, Docker, and Kube
 
    # Deploy URL shortener
    kubectl apply -f url-shortener-deployment.yaml
+
+   # Apply HPA for auto-scaling
+   kubectl apply -f url-shortener-hpa.yaml
+
+   # Apply Ingress (if needed)
+   kubectl apply -f url-shortener-ingress.yaml
    ```
 
-5. Check if your pods are running:
-   ```bash
-   kubectl get pods
+5. For Ingress to work locally, add this entry to your `/etc/hosts` file:
+   ```
+   127.0.0.1  url-shortener.local
    ```
 
-6. Access the application:
-   - For Docker Desktop: `kubectl get svc url-shortener`
-   - For minikube: `minikube service url-shortener`
+6. Run in a separate terminal:
+   ```
+   minikube tunnel
+   ```
+
+7. Access the application:
+   - With LoadBalancer: http://localhost
+   - With Ingress: http://url-shortener.local
 
 ### Sending API Requests
 
@@ -92,7 +110,7 @@ Send API request via terminal:
     curl -X POST \
     -H "Content-Type: application/json" \
     -d '{"url":"https://amazon.in"}' \
-    http://<your-service-ip>/shorten
+    http://url-shortener.local/shorten
    ```
 
 ### Stopping the application
@@ -104,10 +122,25 @@ Send API request via terminal:
 
 2. If using kubernetes:
    ```bash
-   kubectl delete -f url-shortener-deployment.yaml -f redis-deployment.yaml -f url-shortener-config.yaml
+   kubectl delete -f url-shortener-ingress.yaml -f url-shortener-hpa.yaml -f url-shortener-deployment.yaml -f redis-deployment.yaml -f url-shortener-config.yaml
    ```
 
-## Basic Monitoring
+## Running Stress Tests
+
+### Using Bash (Unix/Linux/Mac)
+
+```bash
+chmod +x stress-test.sh
+./stress-test.sh
+```
+
+### Using PowerShell (Windows/Mac with PowerShell installed)
+
+```powershell
+pwsh -File stress-test.ps1
+```
+
+## Monitoring
 
 Monitor your deployment with standard Kubernetes commands:
 
@@ -121,8 +154,8 @@ kubectl describe pod <pod-name>
 # Check logs
 kubectl logs <pod-name>
 
-# View services
-kubectl get svc
+# Monitor HPA
+kubectl get hpa
 ```
 
 ## API Endpoints
