@@ -4,9 +4,21 @@ services:
     build: .
     ports:
       - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
     depends_on:
+      - mongodb
       - redis
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+  mongodb:
+    image: "mongo:5.0"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

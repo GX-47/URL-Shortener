@@ -3,11 +3,31 @@ import string
 import random
 import os
 import redis
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
-# Connect to Redis if REDIS_HOST is provided, otherwise use in-memory dictionary
-if os.environ.get('REDIS_HOST'):
+# Connect to Redis or MongoDB based on environment variables
+if os.environ.get('MONGO_URI'):
+    mongo_client = MongoClient(os.environ.get('MONGO_URI'))
+    db = mongo_client.get_database('url_shortener')
+    urls_collection = db.urls
+    
+    # Use MongoDB for storage
+    def save_url(short_url, long_url):
+        urls_collection.update_one(
+            {'short_code': short_url}, 
+            {'$set': {'long_url': long_url}},
+            upsert=True
+        )
+    
+    def get_url(short_url):
+        result = urls_collection.find_one({'short_code': short_url})
+        if result:
+            return result['long_url']
+        return None
+        
+elif os.environ.get('REDIS_HOST'):
     r = redis.Redis(
         host=os.environ.get('REDIS_HOST', 'localhost'),
         port=int(os.environ.get('REDIS_PORT', 6379)),

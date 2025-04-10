@@ -1,6 +1,6 @@
 ﻿# PowerShell stress test script for URL shortener
 $url = "http://url-shortener.local/shorten"
-$payload = Get-Content -Path "payload.json" -Raw
+$payload = Get-Content -Path ".payload.json" -Raw
 $headers = @{
     "Content-Type" = "application/json"
 }

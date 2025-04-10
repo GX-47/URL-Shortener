@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: url-shortener
-        image: your-docker-username/url-shortener:v1
+        image: pes1ug22cs056/url-shortener:v1
         ports:
         - containerPort: 5000
         envFrom:

@@ -1,12 +1,12 @@
 # Load-Balanced URL Shortener
 
-A containerized URL shortener service built with Python, Flask, Docker, and Kubernetes that allows users to submit long URLs and get shortened versions. The system is scalable, with a load balancer distributing requests across multiple instances. URL mappings are stored in Redis, a key-value store running in a separate container.
+A containerized URL shortener service built with Python, Flask, Docker, and Kubernetes that allows users to submit long URLs and get shortened versions. The system is scalable, with a load balancer distributing requests across multiple instances. URL mappings are stored in MongoDB, a key-value store running in a separate container.
 
 ## Features
 
 - Shorten long URLs to easily shareable short URLs
 - Containerized application using Docker
-- Redis for URL storage
+- MongoDB for URL storage
 - Horizontally scalable with Kubernetes
 - Auto-scaling based on CPU usage
 - Load balancing across multiple instances
@@ -21,12 +21,14 @@ A containerized URL shortener service built with Python, Flask, Docker, and Kube
 ├── docker-compose.yml            # Docker Compose configuration
 ├── requirements.txt              # Python dependencies
 ├── redis-deployment.yaml         # Redis Kubernetes deployment
+├── mongodb-deployment.yaml       # MongoDB Kubernetes deployment
+├── mongodb-pvc.yaml              # MongoDB PVC deployment
 ├── url-shortener-config.yaml     # ConfigMap and Secret
 ├── url-shortener-deployment.yaml # URL shortener deployment
 ├── url-shortener-hpa.yaml        # Horizontal Pod Autoscaler
 ├── url-shortener-ingress.yaml    # Ingress configuration
-└── stress-test.ps1               # PowerShell stress testing script
 ├── stress-test.sh                # Bash stress testing script
+└── stress-test.ps1               # PowerShell stress testing script
 ```
 
 ## Setup and Installation
@@ -72,6 +74,12 @@ A containerized URL shortener service built with Python, Flask, Docker, and Kube
 
 4. Apply Kubernetes configurations:
    ```bash
+   # Apply MongoDB PVC
+   kubectl apply -f mongodb-pvc.yaml
+
+   # Apply MongoDB deployment
+   kubectl apply -f mongodb-deployment.yaml
+
    # Apply ConfigMap and Secret
    kubectl apply -f url-shortener-config.yaml
 
@@ -111,6 +119,18 @@ Send API request via terminal:
     -H "Content-Type: application/json" \
     -d '{"url":"https://amazon.in"}' \
     http://url-shortener.local/shorten
+   ```
+
+### Checking the Database
+
+1. Open mongosh:
+   - Docker: `docker exec -it $(docker ps -q -f name=mongodb) mongosh`
+   - Kubernetes: `kubectl exec -it $(kubectl get pods -l app=mongodb -o jsonpath='{.items[0].metadata.name}') -- mongosh`
+
+2. Run
+   ```bash
+   use url_shortener
+   db.urls.find().pretty()
    ```
 
 ### Stopping the application
