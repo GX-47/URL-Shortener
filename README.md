@@ -283,3 +283,7 @@ kubectl get hpa
 - Docker - Containerization
 - Gunicorn - WSGI HTTP Server
 - Kubernetes - Orchestration
+
+## Continuous Integration/Continuous Deployment
+
+For setting up automated builds and deployments using GitHub Actions, see the [GitHub Actions Setup Guide](GITHUB_ACTIONS_SETUP.md).
