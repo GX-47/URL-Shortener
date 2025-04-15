@@ -1,5 +1,10 @@
 # GitHub Actions Setup
 
+## Prerequisites
+- Docker installed on your system
+- GitHub account
+- Personal Access Token (PAT) with proper permissions
+
 ## Configure GitHub Container Registry Access
 
 Make sure your Kubernetes cluster has access to pull images from GitHub Container Registry:
@@ -20,4 +25,28 @@ kubectl create secret docker-registry github-container-registry \
 ```yaml
 imagePullSecrets:
 - name: github-container-registry
+```
+
+## Pull and Run the Image
+
+Open your terminal and run:
+
+```bash
+echo YOUR_PAT_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+```
+
+Replace:
+- `YOUR_PAT_TOKEN` with the token you created
+- `YOUR_GITHUB_USERNAME` with your GitHub username
+
+## Step 3: Pull the Docker Image
+
+```bash
+docker pull ghcr.io/gx-47/url-shortener:sha-a53c646
+```
+
+## Step 4: Run the Container
+
+```bash
+docker run -d -p 8080:8080 --name url-shortener ghcr.io/gx-47/url-shortener:sha-a53c646
 ```
