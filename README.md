@@ -47,6 +47,7 @@ A containerized URL shortener service built with Python, Flask, Docker, and Kube
 │   └── stress-test.ps1             # PowerShell stress test
 │
 ├── .gitignore                      # Git ignore file
+├── GITHUB_ACTIONS_SETUP.md         # CI/CD Setup documentation
 └── README.md                       # Project documentation
 ```
 
